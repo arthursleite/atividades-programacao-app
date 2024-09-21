@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  Button,
   View,
   SafeAreaView,
   Text,
-  Alert,
   Image,
   TouchableOpacity
 } from 'react-native';
@@ -50,9 +48,10 @@ const App = () => {
         </Text>
         <Separator />
         <Image
-          source={isBiscoitoQuebrado ? require('./assets/open-cookie.png') : require('./assets/closed-cookie.png')}
+          source={isBiscoitoQuebrado ? { uri: 'https://cache.e-cards.com/images/area/chinese-new-year/open-cookie.png' } : { uri: 'https://cache.e-cards.com/images/area/chinese-new-year/closed-cookie.png' }}
           style={styles.image}
         />
+
         <Separator />
         {isBiscoitoQuebrado && <Text style={styles.fraseText}>{frase}</Text>}
 
