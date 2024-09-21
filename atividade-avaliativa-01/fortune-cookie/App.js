@@ -1,89 +1,114 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Button,
+  View,
+  SafeAreaView,
+  Text,
+  Alert,
+  Image,
+  TouchableOpacity
+} from 'react-native';
 
-// Frases de sorte
-const fortunes = [
-  "A sorte está ao seu lado hoje!",
-  "Grandes mudanças estão por vir.",
-  "Sucesso está no seu caminho.",
-  "Você terá uma surpresa agradável.",
-  "A felicidade está à sua porta.",
-  "Confie em si mesmo e você será imbatível.",
+const Separator = () => <View style={styles.separator} />;
+
+const frases = [
+  'A vida trará coisas boas se tiveres paciência.',
+  'Demonstre amor e alegria em todas as oportunidades e verás que a paz nasce dentro de você.',
+  'Não compense na ira o que lhe falta na razão.',
+  'Defeitos e virtudes são apenas dois lados da mesma moeda.',
+  'A maior de todas as torres começa no solo.',
+  'Não há que ser forte. Há que ser flexível.',
+  'Gente todo dia arruma os cabelos, por que não o coração?',
+  'Há três coisas que jamais voltam; a flecha lançada, a palavra dita e a oportunidade perdida.',
+  'A juventude não é uma época da vida, é um estado de espírito.',
+  'Podemos escolher o que semear, mas somos obrigados a colher o que plantamos.',
 ];
 
-export default function App() {
-  const [isCookieBroken, setIsCookieBroken] = useState(false);
-  const [fortune, setFortune] = useState('');
+const App = () => {
+  const [frase, setFrase] = useState('');
+  const [isBiscoitoQuebrado, setIsBiscoitoQuebrado] = useState(false);
 
   const quebrarBiscoito = () => {
-    if (!isCookieBroken) {
-      const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-      setFortune(randomFortune);
-      setIsCookieBroken(true);
+    if (!isBiscoitoQuebrado) {
+      const indice = Math.floor(Math.random() * frases.length);
+      setFrase(frases[indice]);
+      setIsBiscoitoQuebrado(true);
     }
   };
 
   const resetarBiscoito = () => {
-    setIsCookieBroken(false);
-    setFortune('');
+    setFrase('');
+    setIsBiscoitoQuebrado(false);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Fortune Cookie</Text>
-      <TouchableOpacity onPress={quebrarBiscoito}>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Text style={styles.title}>
+          Fortune Cookie
+        </Text>
+        <Separator />
         <Image
-          source={
-            isCookieBroken
-              ? require('./assets/open-cookie.png')
-              : require('./assets/closed-cookie.png')
-          }
-          style={styles.cookieImage}
+          source={isBiscoitoQuebrado ? require('./assets/open-cookie.png') : require('./assets/closed-cookie.png')}
+          style={styles.image}
         />
-      </TouchableOpacity>
-      {isCookieBroken && <Text style={styles.fortuneText}>{fortune}</Text>}
-      {isCookieBroken && (
-        <TouchableOpacity onPress={resetarBiscoito} style={styles.resetButton}>
-          <Text style={styles.resetButtonText}>Tentar Novamente</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+        <Separator />
+        {isBiscoitoQuebrado && <Text style={styles.fraseText}>{frase}</Text>}
+
+        <Separator />
+        {isBiscoitoQuebrado && (
+          <TouchableOpacity onPress={resetarBiscoito} style={styles.button}>
+            <Text style={styles.buttonText}>Tentar novamente</Text>
+          </TouchableOpacity>
+        )}
+
+        {!isBiscoitoQuebrado && (
+          <TouchableOpacity onPress={quebrarBiscoito} style={styles.button}>
+            <Text style={styles.buttonText}>Clique aqui para abrir o biscoito</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    marginHorizontal: 16,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
-    fontWeight: 'bold',
-  },
-  cookieImage: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
-  },
-  fortuneText: {
-    fontSize: 18,
-    marginBottom: 20,
     textAlign: 'center',
-    paddingHorizontal: 20,
-    color: '#555',
+    marginVertical: 8,
   },
-  resetButton: {
-    backgroundColor: '#ffcc00',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+  separator: {
+    marginVertical: 8,
+    borderBottomColor: '#737373',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  resetButtonText: {
+  image: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+  },
+  fraseText: {
+    textAlign: 'center',
     fontSize: 16,
-    fontWeight: 'bold',
+    marginVertical: 8,
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 50,
+  },
+  buttonText: {
     color: '#fff',
+    fontSize: 16,
   },
 });
+
+export default App;
