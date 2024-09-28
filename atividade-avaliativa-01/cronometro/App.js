@@ -9,8 +9,8 @@ const App = () => {
     let interval = null;
     if (isRodando) {
       interval = setInterval(() => {
-        setTempo(prevTempo => prevTempo + 100); // Incrementa 100 ms (0.1s)
-      }, 100); // Atualiza a cada 100 ms
+        setTempo(prevTempo => prevTempo + 100);
+      }, 100);
     } else {
       clearInterval(interval);
     }

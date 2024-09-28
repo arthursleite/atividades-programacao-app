@@ -82,7 +82,7 @@ const App = () => {
           </Text>
         )}
         <Separator />
-        <TouchableOpacity onPress={mostrarCitacao} style={styles.button}>
+        <TouchableOpacity onPress={() => mostrarCitacao()} style={styles.button}>
           <Text style={styles.buttonText}>Nova citação</Text>
         </TouchableOpacity>
       </View>

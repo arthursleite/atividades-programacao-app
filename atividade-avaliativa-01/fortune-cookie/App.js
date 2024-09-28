@@ -48,7 +48,9 @@ const App = () => {
         </Text>
         <Separator />
         <Image
-          source={isBiscoitoQuebrado ? { uri: 'https://cache.e-cards.com/images/area/chinese-new-year/open-cookie.png' } : { uri: 'https://cache.e-cards.com/images/area/chinese-new-year/closed-cookie.png' }}
+          source={isBiscoitoQuebrado 
+            ? require ('./assets/open-cookie.png') 
+            : require ('./assets/closed-cookie.png')}
           style={styles.image}
         />
 
@@ -88,8 +90,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 300,
+    height: 300,
     alignSelf: 'center',
   },
   fraseText: {
