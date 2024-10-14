@@ -1,78 +1,68 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, TextInput, Text, StatusBar, Platform, Pressable, View } from 'react-native';
+import { SafeAreaView, StyleSheet, TextInput, Text, StatusBar, Platform, Pressable, View, Image } from 'react-native';
 
-const Classificacao = ({ classificacaoIMC }) => {
-  console.log("ClassificacaoIMC no componente:", classificacaoIMC);
+const imagens = [
+  require('./assets/gasolina.png'),
+  require('./assets/etanol.png')
+]
+
+const Resultado = ({ resultado, imagem }) => {
   return (
     <View>
-      <Text style={styles.resultado}>{classificacaoIMC || "Sem classificação"}</Text>
+      <Text style={styles.resultado}>{resultado || "Resultado indisponível"}</Text>
+      <Image source={imagem} style={styles.imagem} />
     </View>
   );
 };
 
 const App = () => {
-  const [peso, setPeso] = useState('');
-  const [altura, setAltura] = useState('');
-  const [resultadoIMC, setResultadoIMC] = useState('');
-  const [classificacaoIMC, setClassificacaoIMC] = useState('');
-  const [triggerRender, setTriggerRender] = useState(false);
-  console.log("ClassificacaoIMC no App:", classificacaoIMC);
+  const [precoAlcool, setPrecoAlcool] = useState('');
+  const [precoGasolina, setPrecoGasolina] = useState('');
+  const [resultado, setResultado] = useState('');
+  const [imagem, setImagem] = useState(0);
 
-  const calcularIMC = () => {
-    console.log("Peso:", peso);
-    console.log("Altura:", altura);
-
-    let imc = parseFloat(peso.replace(',', '.')) / (parseFloat(altura.replace(',', '.')) * parseFloat(altura.replace(',', '.')));
-    console.log("IMC calculado:", imc);
-
-    setResultadoIMC(imc.toFixed(2));
-    console.log('ResultadoIMC atualizado:', resultadoIMC);
-
-    let classificacao = '';
-    if (imc < 18.5) {
-      classificacao = 'Abaixo do peso';
-    } else if (imc >= 18.5 && imc < 24.9) {
-      classificacao = 'Peso normal';
-    } else if (imc >= 25 && imc < 29.9) {
-      classificacao = 'Sobrepeso';
-    } else if (imc >= 30 && imc < 34.9) {
-      classificacao = 'Obesidade grau 1';
-    } else if (imc >= 35 && imc < 39.9) {
-      classificacao = 'Obesidade grau 2';
-    } else {
-      classificacao = 'Obesidade grau 3';
+  const calcularPreco = () => {
+    if (precoAlcool === '' || precoGasolina === '') {
+      setResultado('Preencha os campos corretamente');
+      return;
     }
 
-    console.log("Classificação:", classificacao);
-    setClassificacaoIMC(classificacao);
-    console.log('ClassificacaoIMC atualizada:', classificacaoIMC); // Adicione este console.log
-    setTriggerRender(!triggerRender);
-  };
+    const precoAlcoolFormatado = parseFloat(precoAlcool.replace(',', '.'));
+    const precoGasolinaFormatado = parseFloat(precoGasolina.replace(',', '.'));
 
+    const resultadoFinal = precoAlcoolFormatado / precoGasolinaFormatado;
+
+    if (resultadoFinal < 0.7) {
+      setResultado('Abasteça com álcool');
+      setImagem(imagens[1]);
+    } else {
+      setResultado('Abasteça com gasolina');
+      setImagem(imagens[0]);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.androidSafeArea}>
-      <Text style={styles.titulo}>Calculadora de IMC</Text>
+      <Text style={styles.titulo}>Comparador de Combustível</Text>
       <TextInput
         style={styles.input}
-        onChangeText={setPeso}
-        value={peso}
-        placeholder="Insira seu peso"
+        onChangeText={setPrecoAlcool}
+        value={precoAlcool}
+        placeholder="Insira o preço do álcool"
         keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
-        onChangeText={setAltura}
-        value={altura}
-        placeholder="Insira sua altura"
+        onChangeText={setPrecoGasolina}
+        value={precoGasolina}
+        placeholder="Insira o preço da gasolina"
         keyboardType="numeric"
       />
-      <Pressable style={styles.botao} onPress={calcularIMC}>
+      <Pressable style={styles.botao} onPress={calcularPreco}>
         <Text style={styles.textoBotao}>Calcular</Text>
       </Pressable>
-      <Text style={styles.resultado}>IMC: {resultadoIMC}</Text>
-      {resultadoIMC !== '' && (
-        <Classificacao classificacaoIMC={classificacaoIMC} />
+      {resultado !== '' && (
+        <Resultado resultado={resultado} imagem={imagem} />
       )}
     </SafeAreaView>
   );
@@ -114,6 +104,12 @@ const styles = StyleSheet.create({
   textoBotao: {
     fontSize: 20,
     color: 'white'
+  },
+  imagem: {
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
+    marginBottom: 20
   }
 });
 
