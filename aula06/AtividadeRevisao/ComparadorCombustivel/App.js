@@ -1,21 +1,11 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, TextInput, Text, StatusBar, Platform, Pressable, View, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, TextInput, Text, StatusBar, Platform, Pressable, View } from 'react-native';
 
-const imagens = [
-  require('./assets/abaixo_do_normal.png'),
-  require('./assets/normal.png'),
-  require('./assets/sobrepeso.png'),
-  require('./assets/obesidade_grau_I.png'),
-  require('./assets/obesidade_grau_II.png'),
-  require('./assets/obesidade_grau_III.png')
-]
-
-const Classificacao = ({ classificacaoIMC, imagem }) => {
+const Classificacao = ({ classificacaoIMC }) => {
   console.log("ClassificacaoIMC no componente:", classificacaoIMC);
   return (
     <View>
       <Text style={styles.resultado}>{classificacaoIMC || "Sem classificação"}</Text>
-      <Image source={imagem} style={styles.imagem} />
     </View>
   );
 };
@@ -25,37 +15,38 @@ const App = () => {
   const [altura, setAltura] = useState('');
   const [resultadoIMC, setResultadoIMC] = useState('');
   const [classificacaoIMC, setClassificacaoIMC] = useState('');
-  const [imagem, setImagem] = useState('');
+  const [triggerRender, setTriggerRender] = useState(false);
+  console.log("ClassificacaoIMC no App:", classificacaoIMC);
 
   const calcularIMC = () => {
+    console.log("Peso:", peso);
+    console.log("Altura:", altura);
 
     let imc = parseFloat(peso.replace(',', '.')) / (parseFloat(altura.replace(',', '.')) * parseFloat(altura.replace(',', '.')));
+    console.log("IMC calculado:", imc);
 
     setResultadoIMC(imc.toFixed(2));
+    console.log('ResultadoIMC atualizado:', resultadoIMC);
 
     let classificacao = '';
-    let indiceImagem = 0;
     if (imc < 18.5) {
       classificacao = 'Abaixo do peso';
     } else if (imc >= 18.5 && imc < 24.9) {
       classificacao = 'Peso normal';
-      indiceImagem = 1;
     } else if (imc >= 25 && imc < 29.9) {
       classificacao = 'Sobrepeso';
-      indiceImagem = 2;
     } else if (imc >= 30 && imc < 34.9) {
       classificacao = 'Obesidade grau 1';
-      indiceImagem = 3;
     } else if (imc >= 35 && imc < 39.9) {
       classificacao = 'Obesidade grau 2';
-      indiceImagem = 4;
     } else {
       classificacao = 'Obesidade grau 3';
-      indiceImagem = 5;
     }
 
+    console.log("Classificação:", classificacao);
     setClassificacaoIMC(classificacao);
-    setImagem(imagens[indiceImagem]);
+    console.log('ClassificacaoIMC atualizada:', classificacaoIMC); // Adicione este console.log
+    setTriggerRender(!triggerRender);
   };
 
 
@@ -81,7 +72,7 @@ const App = () => {
       </Pressable>
       <Text style={styles.resultado}>IMC: {resultadoIMC}</Text>
       {resultadoIMC !== '' && (
-        <Classificacao classificacaoIMC={classificacaoIMC} imagem={imagem} />
+        <Classificacao classificacaoIMC={classificacaoIMC} />
       )}
     </SafeAreaView>
   );
@@ -123,12 +114,6 @@ const styles = StyleSheet.create({
   textoBotao: {
     fontSize: 20,
     color: 'white'
-  },
-  imagem: {
-    width: 200,
-    height: 370,
-    alignSelf: 'center',
-    marginBottom: 20
   }
 });
 
