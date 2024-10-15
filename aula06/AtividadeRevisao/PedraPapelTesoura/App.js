@@ -10,64 +10,75 @@ const imagens = [
   require('./assets/cpu-tesoura.png')
 ]
 
-const Resultado = ({ resultado, imagem }) => {
-  return (
-    <View>
-      <Text style={styles.resultado}>{resultado || "Resultado indisponível"}</Text>
-      <Image source={imagem} style={styles.imagem} />
-    </View>
-  );
-};
-
 const App = () => {
-  const [precoAlcool, setPrecoAlcool] = useState('');
-  const [precoGasolina, setPrecoGasolina] = useState('');
-  const [resultado, setResultado] = useState('');
-  const [imagem, setImagem] = useState(0);
+  const [opcaoCPU, setOpcaoCPU] = useState('');
+  const [opcaoUser, setOpcaoUser] = useState('');
 
-  const calcularPreco = () => {
-    if (precoAlcool === '' || precoGasolina === '') {
-      setResultado('Preencha os campos corretamente');
-      return;
+  const definirOpcaoCPU = () => {
+    const opcoes = ['pedra', 'papel', 'tesoura'];
+    const opcao = opcoes[Math.floor(Math.random() * opcoes.length)];
+    setTimeout(() => {
+      setOpcaoCPU(opcao);
+    }, 1000);
+  };
+
+  const definirOpcaoUser = (opcao) => {
+    switch (opcao) {
+      case 'pedra':
+        setOpcaoUser(opcao);
+        break;
+      case 'papel':
+        setOpcaoUser(opcao);
+        break;
+      case 'tesoura':
+        setOpcaoUser(opcao);
+        break;
+      default:
+        'Opção inválida';
+        break;
     }
-
-    const precoAlcoolFormatado = parseFloat(precoAlcool.replace(',', '.'));
-    const precoGasolinaFormatado = parseFloat(precoGasolina.replace(',', '.'));
-
-    const resultadoFinal = precoAlcoolFormatado / precoGasolinaFormatado;
-
-    if (resultadoFinal < 0.7) {
-      setResultado('Abasteça com álcool');
-      setImagem(imagens[1]);
-    } else {
-      setResultado('Abasteça com gasolina');
-      setImagem(imagens[0]);
-    }
+    
+    definirOpcaoCPU();
   };
 
   return (
     <SafeAreaView style={styles.androidSafeArea}>
-      <Text style={styles.titulo}>Comparador de Combustível</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setPrecoAlcool}
-        value={precoAlcool}
-        placeholder="Insira o preço do álcool"
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setPrecoGasolina}
-        value={precoGasolina}
-        placeholder="Insira o preço da gasolina"
-        keyboardType="numeric"
-      />
-      <Pressable style={styles.botao} onPress={calcularPreco}>
-        <Text style={styles.textoBotao}>Calcular</Text>
-      </Pressable>
-      {resultado !== '' && (
-        <Resultado resultado={resultado} imagem={imagem} />
-      )}
+      <Text style={styles.titulo}>Pedra, Papel e Tesoura</Text>
+      <View>
+        <View style={styles.containerResultadoCPU}>
+          <Image
+            source={require('./assets/cpu-pedra.png')}
+            style={styles.imagemResultado}
+          />
+        </View>
+        <View style={styles.containerResultadoUser}>
+          <Image
+            source={require('./assets/user-papel.png')}
+            style={styles.imagemResultado}
+          />
+        </View>
+      </View>
+      <Text style={styles.enunciado}>Escolha uma opção:</Text>
+      <View style={styles.containerBotoes}>
+        <Pressable style={styles.botao} onPress={() => definirOpcaoUser('pedra')}>
+          <Image
+            source={require('./assets/user-pedra.png')}
+            style={styles.imagemBotao}
+          />
+        </Pressable>
+        <Pressable style={styles.botao} onPress={() => definirOpcaoUser('papel')}>
+          <Image
+            source={require('./assets/user-papel.png')}
+            style={styles.imagemBotao}
+          />
+        </Pressable>
+        <Pressable style={styles.botao} onPress={() => definirOpcaoUser('tesoura')}>
+          <Image
+            source={require('./assets/user-tesoura.png')}
+            style={styles.imagemBotao}
+          />
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 };
@@ -81,7 +92,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   titulo: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -90,8 +101,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
   },
-  resultado: {
-    fontSize: 30,
+  enunciado: {
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20
@@ -101,7 +112,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: 4,
+    borderRadius: 6,
     elevation: 3,
     backgroundColor: 'blue',
   },
@@ -109,11 +120,28 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white'
   },
-  imagem: {
-    width: 200,
+  imagemBotao: {
+    width: 40,
+    height: 30,
+    alignSelf: 'center',
+  },
+  containerBotoes: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: 20,
+  },
+  imagemResultado: {
+    width: 240,
     height: 200,
     alignSelf: 'center',
-    marginBottom: 20
+  },
+  containerResultadoCPU: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  containerResultadoUser: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   }
 });
 
