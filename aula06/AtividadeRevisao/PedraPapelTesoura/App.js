@@ -74,7 +74,7 @@ const App = () => {
     } else if (opcaoCPU === 'tesoura') {
       return <Image source={imagens[5]} style={styles.imagemResultado} />;
     } else {
-      return null; // Não exibir imagem enquanto não houver escolha
+      return null;
     }
   };
 
@@ -86,7 +86,7 @@ const App = () => {
     } else if (opcaoUser === 'tesoura') {
       return <Image source={imagens[2]} style={styles.imagemResultado} />;
     } else {
-      return null; // Não exibir imagem enquanto não houver escolha
+      return null;
     }
   };
 
