@@ -55,7 +55,9 @@ const App = () => {
   };
 
   const Resultado = () => {
-    if (vencedor === 'user') {
+    if (!vencedor) {
+      return null;
+    } else if (vencedor === 'user') {
       return <Text style={styles.resultado}>Você ganhou!</Text>;
     } else if (vencedor === 'CPU') {
       return <Text style={styles.resultado}>Você perdeu!</Text>;
@@ -165,7 +167,8 @@ const styles = StyleSheet.create({
     width: 220,
     height: 150,
     alignSelf: 'center',
-    margin: 10
+    margin: 10,
+    minHeight: 150
   },
   containerResultadoCPU: {
     flexDirection: 'row',
