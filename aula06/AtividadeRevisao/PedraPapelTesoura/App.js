@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, TextInput, Text, StatusBar, Platform, Pressable, View, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, Text, StatusBar, Platform, TouchableOpacity, View, Image } from 'react-native';
 
 const imagens = [
   require('./assets/user-pedra.png'),
@@ -8,37 +8,84 @@ const imagens = [
   require('./assets/cpu-pedra.png'),
   require('./assets/cpu-papel.png'),
   require('./assets/cpu-tesoura.png')
-]
+];
 
 const App = () => {
   const [opcaoCPU, setOpcaoCPU] = useState('');
   const [opcaoUser, setOpcaoUser] = useState('');
+  const [vencedor, setVencedor] = useState('');
+
+  const definirOpcaoUser = (opcao) => {
+    setOpcaoUser(opcao);
+  };
 
   const definirOpcaoCPU = () => {
     const opcoes = ['pedra', 'papel', 'tesoura'];
     const opcao = opcoes[Math.floor(Math.random() * opcoes.length)];
-    setTimeout(() => {
-      setOpcaoCPU(opcao);
-    }, 1000);
+    setOpcaoCPU(opcao);
   };
 
-  const definirOpcaoUser = (opcao) => {
-    switch (opcao) {
-      case 'pedra':
-        setOpcaoUser(opcao);
-        break;
-      case 'papel':
-        setOpcaoUser(opcao);
-        break;
-      case 'tesoura':
-        setOpcaoUser(opcao);
-        break;
-      default:
-        'Opção inválida';
-        break;
+  useEffect(() => {
+    if (opcaoUser && opcaoCPU) {
+      definirVencedor();
     }
-    
+  }, [opcaoUser, opcaoCPU]);
+
+  const definirVencedor = () => {
+    if (opcaoUser === 'pedra' && opcaoCPU === 'tesoura') {
+      setVencedor('user');
+    } else if (opcaoUser === 'tesoura' && opcaoCPU === 'papel') {
+      setVencedor('user');
+    } else if (opcaoUser === 'papel' && opcaoCPU === 'pedra') {
+      setVencedor('user');
+    } else if (opcaoCPU === 'pedra' && opcaoUser === 'tesoura') {
+      setVencedor('CPU');
+    } else if (opcaoCPU === 'tesoura' && opcaoUser === 'papel') {
+      setVencedor('CPU');
+    } else if (opcaoCPU === 'papel' && opcaoUser === 'pedra') {
+      setVencedor('CPU');
+    } else {
+      setVencedor('empate');
+    }
+  };
+
+  const rodarJogo = (opcaoUserParam) => {
+    definirOpcaoUser(opcaoUserParam);
     definirOpcaoCPU();
+  };
+
+  const Resultado = () => {
+    if (vencedor === 'user') {
+      return <Text style={styles.resultado}>Você ganhou!</Text>;
+    } else if (vencedor === 'CPU') {
+      return <Text style={styles.resultado}>Você perdeu!</Text>;
+    } else {
+      return <Text style={styles.resultado}>Empate!</Text>;
+    }
+  };
+
+  const ImagemCPU = () => {
+    if (opcaoCPU === 'pedra') {
+      return <Image source={imagens[3]} style={styles.imagemResultado} />;
+    } else if (opcaoCPU === 'papel') {
+      return <Image source={imagens[4]} style={styles.imagemResultado} />;
+    } else if (opcaoCPU === 'tesoura') {
+      return <Image source={imagens[5]} style={styles.imagemResultado} />;
+    } else {
+      return null; // Não exibir imagem enquanto não houver escolha
+    }
+  };
+
+  const ImagemUser = () => {
+    if (opcaoUser === 'pedra') {
+      return <Image source={imagens[0]} style={styles.imagemResultado} />;
+    } else if (opcaoUser === 'papel') {
+      return <Image source={imagens[1]} style={styles.imagemResultado} />;
+    } else if (opcaoUser === 'tesoura') {
+      return <Image source={imagens[2]} style={styles.imagemResultado} />;
+    } else {
+      return null; // Não exibir imagem enquanto não houver escolha
+    }
   };
 
   return (
@@ -46,51 +93,39 @@ const App = () => {
       <Text style={styles.titulo}>Pedra, Papel e Tesoura</Text>
       <View>
         <View style={styles.containerResultadoCPU}>
-          <Image
-            source={require('./assets/cpu-pedra.png')}
-            style={styles.imagemResultado}
-          />
+          <ImagemCPU />
         </View>
         <View style={styles.containerResultadoUser}>
-          <Image
-            source={require('./assets/user-papel.png')}
-            style={styles.imagemResultado}
-          />
+          <ImagemUser />
         </View>
       </View>
+      <Resultado />
       <Text style={styles.enunciado}>Escolha uma opção:</Text>
       <View style={styles.containerBotoes}>
-        <Pressable style={styles.botao} onPress={() => definirOpcaoUser('pedra')}>
+        <TouchableOpacity style={styles.botao} onPress={() => rodarJogo('pedra')}>
           <Image
             source={require('./assets/user-pedra.png')}
             style={styles.imagemBotao}
           />
-        </Pressable>
-        <Pressable style={styles.botao} onPress={() => definirOpcaoUser('papel')}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.botao} onPress={() => rodarJogo('papel')}>
           <Image
             source={require('./assets/user-papel.png')}
             style={styles.imagemBotao}
           />
-        </Pressable>
-        <Pressable style={styles.botao} onPress={() => definirOpcaoUser('tesoura')}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.botao} onPress={() => rodarJogo('tesoura')}>
           <Image
             source={require('./assets/user-tesoura.png')}
             style={styles.imagemBotao}
           />
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 50,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10
-  },
   titulo: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -116,10 +151,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: 'blue',
   },
-  textoBotao: {
-    fontSize: 20,
-    color: 'white'
-  },
   imagemBotao: {
     width: 40,
     height: 30,
@@ -131,17 +162,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   imagemResultado: {
-    width: 240,
-    height: 200,
+    width: 220,
+    height: 150,
     alignSelf: 'center',
+    margin: 10
   },
   containerResultadoCPU: {
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   containerResultadoUser: {
     flexDirection: 'row',
     justifyContent: 'flex-start'
+  },
+  resultado: {
+    fontSize: 38,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 20
   }
 });
 
